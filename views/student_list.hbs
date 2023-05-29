@@ -1,0 +1,29 @@
+<table border ="2">
+    <tr>
+        <th colspan="6">Student list</th>
+    </tr>
+    <tr>
+        <th>Student name</th>
+        <th>Student dob</th>
+        <th>Student gender</th>
+        <th>Student GPA</th>
+        <th>Student Ava</th>
+        <th>Function</th>
+    </tr>
+    {{#each students}}
+    <tr>
+        <th>{{name}}</th>
+        <th>{{dateFormat dob "DD/MM/YYYY"}}</th>
+        <th>{{gender}}</th>
+        <th>{{gpa}}</th>
+        <th><img src="{{ava}}" alt=""></th>
+        <th>
+            <button><a href="/detail/{{_id}}">Detail</a></button>
+            <button><a href="/edit/{{_id}}">Edit</a></button>
+            <button><a href="/delete/{{_id}}">Delete</a></button>
+        </th>
+    </tr>
+    {{/each}}
+</table>
+<button><a href="/drop">delete all</a></button>
+<button><a href="/add">add</a></button>
