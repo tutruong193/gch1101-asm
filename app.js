@@ -7,14 +7,32 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-var app = express();
-//connect db
-var mongoose = require("mongoose");
-var uri = "mongodb+srv://tutagch210167:tu19032003@cluster0.foirayj.mongodb.net/demo";
-//body parser
-var bodyParser = require('body-parser');
+//4A. khai báo router tùy biến
+var studentRouter = require('./routes/student');
+var lecturerRouter = require('./routes/lecturer');
+var subjectRouter = require('./routes/subject');
+
+//khai báo thư viện hbs
 var hbs = require('hbs');
-hbs.registerHelper('dateFormat', require('handlebars-dateformat')); 
+//sử dụng helper "equal" để so sánh
+hbs.registerHelper('equal', require('handlebars-helper-equal'));
+
+
+var app = express();
+
+//1. mongoose : làm việc với database 
+var mongoose = require('mongoose');
+//console.log("Mongoose version: " + mongoose.version);
+//Note: cần khai báo DB name trong database uri
+var uri = "mongodb+srv://tutagch210167:tu19032003@cluster0.foirayj.mongodb.net/demo"; 
+mongoose.connect(uri)
+.then(() => {console.log("Connect to DB succeed !")})
+.catch((err) => {console.log (err)});
+
+//2. body-parser: lấy dữ liệu từ form
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended : false}));
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -28,6 +46,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+//4B. sử dụng router tùy biến
+app.use('/student', studentRouter);
+app.use('/lecturer', lecturerRouter);
+app.use('/subject', subjectRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -44,13 +66,9 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-//body parser
-app.use(bodyParser.urlencoded({ extended: false }));
-//mongoose
-mongoose.connect(uri)
-.then(() => console.log ("Connect to DB succeed !"))
-.catch((err) => console.log (err));
 
-var port = process.env.PORT || 3001;
-app.listen (port);
+//3. set port để chạy được trên hosting
+var port = process.env.PORT || 3003;
+app.listen(port);
+
 module.exports = app;
